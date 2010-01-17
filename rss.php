@@ -6,8 +6,12 @@
 <?php
 	require_once('db.php');
 	
-	function grab_reports($limit='0,50',$sincets='0') {
-		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.sms, person.created, person.updated, person.ts, person.aid_type, person.notes, person.smsid, sms.date_rec as date_rec, sms.number as phone FROM person LEFT JOIN sms ON sms.smsid = person.smsid WHERE created >= ".mysql_escape_string($sincets)." order by created desc limit ".mysql_escape_string($limit);
+	function grab_reports($limit='0,50',$sincets='0',$only_phone=0) {
+		$extra_query = '';
+		if($only_phone == 1){
+			$extra_query .= 'AND sms.number IS NOT NULL ';
+		}
+		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.sms, person.created, person.updated, person.ts, person.aid_type, person.notes, person.smsid, sms.date_rec as date_rec, sms.number as phone FROM person LEFT JOIN sms ON sms.smsid = person.smsid WHERE created >= ".mysql_escape_string($sincets)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
 		$sth = mysql_query($query);
 		return $sth;
 	}
@@ -18,7 +22,10 @@
 	$sincets = 0;
 	if(isset($_GET['sincets'])) $sincets = $_GET['sincets'];
 	
-	$sth = grab_reports($limit,$sincets);
+	$only_phone = 0;
+	if(isset($_GET['only_phone'])) $only_phone = $_GET['only_phone'];
+	
+	$sth = grab_reports($limit,$sincets,$only_phone);
 	$rows = array();
 	
 	$highest_updated_date = 0;
