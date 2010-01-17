@@ -131,6 +131,9 @@ if(isset($_GET["data_entry"]) && $_GET["data_entry"] == 1)
 							<option>6. Persons News</option>
 							<option>--6a. Deaths</option>
 							<option>--6b. Missing Persons</option>
+							<option></option>
+							<option>Asking to forward a message</option>
+							<option></option>
 						</select>
 						<span style="color:#FF0000">&lt;--Very Important</span>
 					</td>
