@@ -1,5 +1,5 @@
 <div id="side-bar">
-	<a href="search_post.php"><div class="button"><?php pmsg('View All Records'); ?></div></a>
+	<a href="search_post.php"><div class="button">Homepage</div></a>
 	<br><br>
 	<a href="add_record.php"><div class="button"><?php pmsg('Add Record'); ?></div></a>
 	<br><br>

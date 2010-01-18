@@ -11,7 +11,7 @@
 		if($only_phone == 1){
 			$extra_query .= 'AND sms.number IS NOT NULL ';
 		}
-		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.sms, person.created, person.updated, person.ts, person.aid_type, person.notes, person.smsid, sms.date_rec as date_rec, sms.number as phone FROM person LEFT JOIN sms ON sms.smsid = person.smsid WHERE created >= ".mysql_escape_string($sincets)." AND created <= ".mysql_escape_string($uptots)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
+		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.sms, person.created, person.updated, person.ts, person.aid_type, person.notes, person.smsid, person.gender, person.numppl, sms.date_rec as date_rec, sms.number as phone FROM person LEFT JOIN sms ON sms.smsid = person.smsid WHERE created >= ".mysql_escape_string($sincets)." AND created <= ".mysql_escape_string($uptots)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
 		$sth = mysql_query($query);
 		return $sth;
 	}
@@ -57,6 +57,7 @@ foreach ($rows as $item) {
 	$department = preg_replace("/[\x80-\xff]/", '?', $item['department']);
 	$lastname = preg_replace("/[\x80-\xff]/", '?', $item['lastname']);
 	$firstname = preg_replace("/[\x80-\xff]/", '?', $item['firstname']);
+	$numppl = preg_replace("/[\x80-\xff]/", '?', $item['numppl']);
 
 	echo '
 	<entry>
@@ -72,6 +73,8 @@ foreach ($rows as $item) {
 		<categorization>'.str_replace('-','',$item['aid_type']).'</categorization>
 		<firstname>'.$firstname.'</firstname>
 		<lastname>'.$lastname.'</lastname>
+		<gender>'.$item['gender'].'</gender>
+		<numppl><![CDATA['.$numppl.']]></numppl>
 		<status>'.$item['status'].'</status>
 		<address>'.$address.'</address>
 		<city>'.$city.'</city>

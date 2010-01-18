@@ -19,6 +19,8 @@ else list($count, $results) = search_person($_REQUEST);
 <?php include('header.php') ?>
 	<?php include_once("sidebar.php"); ?>
 	<div id="content">
+		<?php
+		/*
 		<p><?php pmsg('search_intro'); ?></p>
 		<?php if (!$results) { ?>
 		<?php pmsg('search_nothing_found'); ?>
@@ -66,7 +68,8 @@ else list($count, $results) = search_person($_REQUEST);
 					$row_class = ($row_count % 2) ? 'odd' : 'even';
 			?>
 			<tr class="<?php echo $row_class; ?>">
-				<td><?php /*if($_SESSION['authenticated'] == 'PCY492My6U8arf') { ?><a href="/person.php?id=<?php echo $row['id']; ?>">Edit</a><?php }*/ ?></td>
+				<td><?php //if($_SESSION['authenticated'] == 'PCY492My6U8arf') { ?><a href="/person.php?id=<?php echo $row['id']; ?>">Edit</a><?php }
+				?></td>
 				<td><?php echo $row['fullname'];?></td>
 				<td><?php echo $row['address'];?></td>
 				<td><?php echo $row['city'];?></td>
@@ -96,6 +99,7 @@ else list($count, $results) = search_person($_REQUEST);
 			</tbody>
 		</table>
 		<?php } ?>
+		<?php */ ?>
 	</div>
 </div>
 <?php require_once('footer.php'); ?>

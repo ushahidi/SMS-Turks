@@ -55,7 +55,7 @@ if(isset($_GET["data_entry"]) && $_GET["data_entry"] == 1)
 					</tr>
 					<tr>
 						<td colspan="2">
-							<?php echo $sms_message['number'].': '.$sms_message['message']; ?><input type="hidden" id="fromsms" name="fromsms" value="<?php echo $sms_message['smsid']; ?>" />
+							<?php echo $sms_message['message']; ?><input type="hidden" id="fromsms" name="fromsms" value="<?php echo $sms_message['smsid']; ?>" />
 							<br /><a href="insert_post.php?sms=1&junk=<?php echo $sms_message['smsid']; ?>">This SMS does not provide enough information.</a>
 							<br /><a href="add_record.php?sms=1&wronglang=<?php echo $sms_message['smsid']; ?>">This SMS is in a language I don't understand.</a>
 						</td>
@@ -80,6 +80,19 @@ if(isset($_GET["data_entry"]) && $_GET["data_entry"] == 1)
 				<tr>
 					<td><label for="lastname">Last Name</label></td>
 					<td><input type="text" id="lastname" name="lastname" value="" /></td>
+				</tr>
+				<tr>
+					<td><label for="gender_male">Gender</label></td>
+					<td>
+						<input type="radio" id="gender_male" name="gender" value="Male" />
+						<label for="gender_male">Male</label>
+						<input type="radio" id="gender_female" name="gender" value="Female" />
+						<label for="gender_female">Female</label>
+					</td>
+				</tr>
+				<tr>
+					<td><label for="numppl"># of People</label></td>
+					<td><input type="text" id="numppl" name="numppl" value="" /></td>
 				</tr>
 				<tr>
 					<td><label for="status">Status</label></td>
