@@ -4,6 +4,16 @@ global $title;
 require_once('db.php');
 $title = msg('Add a Record');
 
+/*
+if(isset($_GET['sitepw'])) $_SESSION['sitepw'] = $_GET['sitepw'];
+if(!isset($_SESSION['sitepw'])) $_SESSION['sitepw'] = 'wrongpw';
+
+if($_SESSION['sitepw'] != 'volunteerforhaiti') {
+	echo 'Sorry, you need proper credentials to access this form. <a href="http://4636.ushahidi.com">Go Back</a>.';
+	die();
+}
+*/
+
 if(!isset($_SESSION['wronglang'])) $_SESSION['wronglang'] = array();
 if(isset($_GET['wronglang'])) {
 	$skipid = (int)$_GET['wronglang'];
@@ -64,7 +74,7 @@ if(isset($_GET["data_entry"]) && $_GET["data_entry"] == 1)
 				}else{
 				?>
 					<tr>
-						<td colspan="2"><h3>The SMS queue is empty.</h3></td>
+						<td colspan="2"><h3>The SMS queue is empty or there are no more messages in your language.</h3></td>
 					</tr>
 				<?php
 				}
@@ -151,6 +161,12 @@ if(isset($_GET["data_entry"]) && $_GET["data_entry"] == 1)
 						<span style="color:#FF0000">&lt;--Very Important</span>
 					</td>
 				</tr>
+				<!--
+				<tr>
+					<td><label for="actionable">Actionable</label></td>
+					<td><input type="checkbox" id="actionable" name="actionable" value="1" /></td>
+				</tr>
+				-->
 				
 				
 				<?php
