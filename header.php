@@ -3,6 +3,7 @@ $result = mysql_query("SELECT count(id) FROM person") or die(mysql_error());
 $query_data = mysql_fetch_row($result);
 $count = $query_data[0];
 $count = number_format($count);
+$message_queue_count = get_sms_queue_count();
 /*
 if(isset($_GET('forcecron']))){
 	run_fake_cron(1);
@@ -27,7 +28,7 @@ run_fake_cron();
 		</div>
 		<h2><a href="/">4636.USHAHIDI.COM</a></h2>
 		<div style="float: left;">
-			Records: <a href="search_post.php"><?php print $count; ?></a> | Messages in queue: <a href="add_record.php?sms=1"><?php echo get_sms_queue_count(); ?></a>
+			Records: <a href="search_post.php"><?php print $count; ?></a> | Messages in queue: <a href="add_record.php?sms=1"><?php echo $message_queue_count; ?></a>
 		</div>
 	</div>
 	<div style="clear:both"></div>
