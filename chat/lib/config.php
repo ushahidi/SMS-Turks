@@ -95,10 +95,10 @@ $config['privateChannelPrefix'] = '[';
 $config['privateChannelSuffix'] = ']';
 
 // If enabled, users will be logged in automatically as guest users (if allowed), if not authenticated:
-$config['forceAutoLogin'] = false;
+$config['forceAutoLogin'] = true;
 
 // Defines if login/logout and channel enter/leave are displayed:
-$config['showChannelMessages'] = true;
+$config['showChannelMessages'] = false;
 
 // If enabled, the chat will only be accessible for the admin:
 $config['chatClosed'] = false;
@@ -169,7 +169,7 @@ $config['defaultBanTime'] = 5;
 $config['logoutData'] = './?logout=true';
 
 // If true, checks if the user IP is the same when logged in:
-$config['ipCheck'] = true;
+$config['ipCheck'] = false;
 
 // Defines the max time difference in hours for logs when no period or search condition is given:
 $config['logsRequestMessagesTimeDiff'] = 1;
