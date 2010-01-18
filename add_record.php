@@ -301,9 +301,9 @@ if(isset($_GET["data_entry"]) && $_GET["data_entry"] == 1)
 				<tr><td colspan="2"><h3>More Details</h3></tr>
 				<tr>
 					<td><label for="sms">Original SMS</label></td>
-					<td><input type="text" id="sms" name="sms" value="<?php
+					<td><input type="hidden" id="sms" name="sms" value="<?php
 						if(isset($sms_message)) echo htmlspecialchars($sms_message['message']);
-					?>" style="width:400px;" /></td>
+					?>" style="width:400px;" /><?php echo $sms_message['message']; ?></td>
 				</tr>
 				<tr>
 					<td><label for="notes">Translation and Notes</label></td>
