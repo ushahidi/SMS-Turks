@@ -71,11 +71,24 @@ function collect_sms_data(){
 
 function add_sms($data,$status=0){
 	
+	// Check if the message has been added before
 	$query = sprintf("SELECT COUNT(*) as count FROM sms WHERE number = '%s' AND message = '%s' LIMIT 1",mysql_escape_string($data['number']), mysql_escape_string($data['message']));
 	$result = mysql_query($query);
+	
 	if(mysql_result($result,0,'count') == 0) {
+		
+		//Insert the message into the SMS database
 		$query = sprintf("INSERT INTO sms (number, message, date_rec, status) VALUES ('%s', '%s', '%s', %d)",mysql_escape_string($data['number']), mysql_escape_string($data['message']), mysql_escape_string($data['time']), $status);
 		mysql_query($query);
+		
+		// Create a unique id for the phone number in the senderid table
+		$query = sprintf("SELECT COUNT(*) as count FROM senderid WHERE number = '%s' LIMIT 1",mysql_escape_string($data['number']));
+		$result = mysql_query($query);
+		if(mysql_result($result,0,'count') == 0) {
+			$query = sprintf("INSERT INTO senderid (number) VALUES ('%s')",mysql_escape_string($data['number']));
+			mysql_query($query);
+		}
+		
 	}
 	
 }

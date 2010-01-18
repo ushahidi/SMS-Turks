@@ -11,7 +11,7 @@
 		if($only_phone == 1){
 			$extra_query .= 'AND sms.number IS NOT NULL ';
 		}
-		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.sms, person.created, person.updated, person.ts, person.aid_type, person.notes, person.smsid, person.gender, person.numppl, sms.date_rec as date_rec, sms.number as phone FROM person LEFT JOIN sms ON sms.smsid = person.smsid WHERE created >= ".mysql_escape_string($sincets)." AND created <= ".mysql_escape_string($uptots)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
+		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.sms, person.created, person.updated, person.ts, person.aid_type, person.notes, person.smsid, person.gender, person.numppl, sms.date_rec as date_rec, sms.number as phone, senderid.senderid as phoneid FROM person LEFT JOIN sms ON sms.smsid = person.smsid LEFT JOIN senderid ON senderid.number = sms.number WHERE created >= ".mysql_escape_string($sincets)." AND created <= ".mysql_escape_string($uptots)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
 		$sth = mysql_query($query);
 		return $sth;
 	}
@@ -69,6 +69,7 @@ foreach ($rows as $item) {
 		<sms><![CDATA['.$sms.']]></sms>
 		<smsrec>'.$item['date_rec'].'</smsrec>
 		<phone>'.$item['phone'].'</phone>
+		<phoneid>'.$item['phoneid'].'</phoneid>
 		<category term="'.str_replace('-','',$item['aid_type']).'"/>
 		<categorization>'.str_replace('-','',$item['aid_type']).'</categorization>
 		<firstname>'.$firstname.'</firstname>
