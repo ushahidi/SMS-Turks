@@ -6,12 +6,12 @@
 <?php
 	require_once('db.php');
 	
-	function grab_reports($limit='0,50',$sincets='0',$uptots='9999999999',$only_phone=0) {
+	function grab_reports($limit='0,50',$sincets='0',$uptots='1500000000',$only_phone=0) {
 		$extra_query = '';
 		if($only_phone == 1){
 			$extra_query .= 'AND sms.number IS NOT NULL ';
 		}
-		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.sms, person.created, person.updated, person.ts, person.aid_type, person.notes, person.smsid, sms.date_rec as date_rec, sms.number as phone FROM person LEFT JOIN sms ON sms.smsid = person.smsid WHERE created >= ".mysql_escape_string($sincets)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
+		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.sms, person.created, person.updated, person.ts, person.aid_type, person.notes, person.smsid, sms.date_rec as date_rec, sms.number as phone FROM person LEFT JOIN sms ON sms.smsid = person.smsid WHERE created >= ".mysql_escape_string($sincets)." AND created <= ".mysql_escape_string($uptots)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
 		$sth = mysql_query($query);
 		return $sth;
 	}
@@ -19,10 +19,10 @@
 	$limit = '0,50';
 	if(isset($_GET['limit'])) $limit = $_GET['limit'];
 	
-	$sincets = 0;
+	$sincets = '0';
 	if(isset($_GET['sincets'])) $sincets = $_GET['sincets'];
 	
-	$uptots = 0;
+	$uptots = '1500000000';
 	if(isset($_GET['uptots'])) $uptots = $_GET['uptots'];
 	
 	$only_phone = 0;
