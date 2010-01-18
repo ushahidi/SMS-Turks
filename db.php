@@ -164,9 +164,10 @@ function create_record($data) {
 	if(!isset($data['fromsms'])) $data['fromsms'] = '';
 	if(!isset($data['notes'])) $data['notes'] = '';
 	if(!isset($data['sms'])) $data['sms'] = '';
+	if(!isset($data['actionable'])) $data['actionable'] = '';
 	
 	if($data['notes'] == "" && $data['aid_type'] == "" && $data['lon'] == "" && $data['lat'] == "" && $data['address'] == ""
-		&& $data['department'] == "" && $data['city'] == "" && $data['fullname'] == " " && $data['sms'] == "") {
+		&& $data['department'] == "" && $data['city'] == "" && $data['fullname'] == " " && $data['sms'] == "" && $data['actionable'] == "") {
 		return 0;
 	}
 	
@@ -174,11 +175,11 @@ function create_record($data) {
 	$query = sprintf(
 	  "INSERT INTO person (firstname, lastname, fullname, age, gender, city, department,
 				status, current_location, address, lat, lon, current_contact_information, 
-				url_link_back, source, data_entry_initials, created, updated, aid_type, notes, sms, smsid)
-				VALUES ('%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', '%s', %d)",
+				url_link_back, source, data_entry_initials, created, updated, aid_type, notes, sms, smsid, actionable)
+				VALUES ('%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', '%s', %d, %d)",
 		$data['firstname'], $data['lastname'], $data['fullname'], $data['age'], $data['gender'], $data['city'], $data['department'],
 		$data['status'], $data['current_location'], $data['address'], $data['lat'], $data['lon'], $data['current_contact_information'], $data['url_link_back'],
-		$data['source'], $data['data_entry_initials'], time(), time(), $data['aid_type'], $data['notes'], $data['sms'], $data['fromsms']
+		$data['source'], $data['data_entry_initials'], time(), time(), $data['aid_type'], $data['notes'], $data['sms'], $data['fromsms'], $data['actionable']
 	);
 	mysql_query($query);
 	$id = mysql_insert_id();
