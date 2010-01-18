@@ -6,15 +6,18 @@
 <?php
 	require_once('db.php');
 	
-	function grab_reports($limit='0,50',$sincets='0',$uptots='1500000000',$only_phone=0) {
+	function grab_reports($limit='0,50',$sincets='0',$uptots='1500000000',$only_phone=0,$category='') {
 		$extra_query = '';
 		if($only_phone == 1){
 			$extra_query .= 'AND sms.number IS NOT NULL ';
 		}
-		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.created, person.updated, person.sms, person.ts, person.aid_type, person.notes, person.smsid, person.gender, person.numppl, person.actionable, sms.date_rec as date_rec, sms.number as phone, sms.message as message, senderid.senderid as phoneid FROM person LEFT JOIN sms ON sms.smsid = person.smsid LEFT JOIN senderid ON senderid.number = sms.number WHERE created >= ".mysql_escape_string($sincets)." AND created <= ".mysql_escape_string($uptots)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
+		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.created, person.updated, person.sms, person.ts, person.aid_type, person.notes, person.smsid, person.gender, person.numppl, person.actionable, sms.date_rec as date_rec, sms.number as phone, sms.message as message, senderid.senderid as phoneid FROM person LEFT JOIN sms ON sms.smsid = person.smsid LEFT JOIN senderid ON senderid.number = sms.number WHERE created >= ".mysql_escape_string($sincets)." AND created <= ".mysql_escape_string($uptots)." AND aid_type LIKE '%".mysql_escape_string($category)."%' ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
 		$sth = mysql_query($query);
 		return $sth;
 	}
+	
+	$category = '';
+	if(isset($_GET['category'])) $category = $_GET['category'];
 	
 	$limit = '0,50';
 	if(isset($_GET['limit'])) $limit = $_GET['limit'];
@@ -28,7 +31,7 @@
 	$only_phone = 0;
 	if(isset($_GET['only_phone'])) $only_phone = $_GET['only_phone'];
 	
-	$sth = grab_reports($limit,$sincets,$uptots,$only_phone);
+	$sth = grab_reports($limit,$sincets,$uptots,$only_phone,$category);
 	$rows = array();
 	
 	$highest_updated_date = 0;
