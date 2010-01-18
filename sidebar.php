@@ -6,6 +6,8 @@
 	<a href="add_record.php?sms=1"><div class="button">Add SMS Record</div></a>
 	<br><br>
 	<a href="http://wiki.ushahidi.com/doku.php?id=4636instructions"><div class="button">Instructions</div></a>
+	<br><br>
+	<a href="chat.php"><div class="button">Volunteer Chat</div></a>
 <!--	<a href="#"><div class="button"><?php pmsg('Upload Images'); ?></div></a> -->
 	<!--
 	<br /><br />

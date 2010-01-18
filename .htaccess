@@ -1,0 +1,6 @@
+# JIT Resize
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} \.(jpg|jpeg|gif|png)$ [NC]
+RewriteCond %{REQUEST_URI} /photos/
+RewriteRule ^(.*)$ ./resize.php?img=$1 [L,QSA]
