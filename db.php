@@ -312,7 +312,7 @@ function update_record($id, $data) {
 
 function all_people() {
 	$count = mysql_result(mysql_query("SELECT count(*) from person"), 0);
-	$res = mysql_query(sprintf("SELECT * FROM person ORDER BY lastname, firstname LIMIT %d, %d", $_GET['page'] * RESULTS_PER_PAGE, RESULTS_PER_PAGE));
+	$res = mysql_query(sprintf("SELECT * FROM person order by created desc LIMIT %d, %d", $_GET['page'] * RESULTS_PER_PAGE, RESULTS_PER_PAGE));
 	return array($count, $res);
 }
 
