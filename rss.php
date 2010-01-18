@@ -11,7 +11,7 @@
 		if($only_phone == 1){
 			$extra_query .= 'AND sms.number IS NOT NULL ';
 		}
-		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.sms, person.created, person.updated, person.ts, person.aid_type, person.notes, person.smsid, person.gender, person.numppl, person.actionable, sms.date_rec as date_rec, sms.number as phone, senderid.senderid as phoneid FROM person LEFT JOIN sms ON sms.smsid = person.smsid LEFT JOIN senderid ON senderid.number = sms.number WHERE created >= ".mysql_escape_string($sincets)." AND created <= ".mysql_escape_string($uptots)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
+		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.created, person.updated, person.sms, person.ts, person.aid_type, person.notes, person.smsid, person.gender, person.numppl, person.actionable, sms.date_rec as date_rec, sms.number as phone, sms.message as message, senderid.senderid as phoneid FROM person LEFT JOIN sms ON sms.smsid = person.smsid LEFT JOIN senderid ON senderid.number = sms.number WHERE created >= ".mysql_escape_string($sincets)." AND created <= ".mysql_escape_string($uptots)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
 		$sth = mysql_query($query);
 		return $sth;
 	}
@@ -50,7 +50,7 @@
 <?php
 foreach ($rows as $item) {
 	
-	$sms = preg_replace("/[\x80-\xff]/", '?', $item['sms']);
+	$message = preg_replace("/[\x80-\xff]/", '?', $item['message']);
 	$notes = preg_replace("/[\x80-\xff]/", '?', $item['notes']);
 	$city = preg_replace("/[\x80-\xff]/", '?', $item['city']);
 	$address = preg_replace("/[\x80-\xff]/", '?', $item['address']);
@@ -66,7 +66,7 @@ foreach ($rows as $item) {
 		<author><name>sms://'.$item['phone'].'</name></author>
 		<updated>'.str_replace(' ','T',$item['ts']).'Z</updated>
 		<title>'.$firstname.' '.$lastname.' at '.$item['lat'].','.$item['lon'].'</title>
-		<sms><![CDATA['.$sms.']]></sms>
+		<sms><![CDATA['.$message.']]></sms>
 		<smsrec>'.$item['date_rec'].'</smsrec>
 		<phone>'.$item['phone'].'</phone>
 		<phoneid>'.$item['phoneid'].'</phoneid>
@@ -81,7 +81,7 @@ foreach ($rows as $item) {
 		<address>'.$address.'</address>
 		<city>'.$city.'</city>
 		<department>'.$department.'</department>
-		<summary><![CDATA['.$item['phone'].': '.$sms.' - '.$notes.']]></summary>
+		<summary><![CDATA['.$item['phone'].': '.$message.' - '.$notes.']]></summary>
 		<notes><![CDATA['.$notes.']]></notes>
 		<georss:point>'.$item['lat'].' '.$item['lon'].'</georss:point>
 	</entry>';

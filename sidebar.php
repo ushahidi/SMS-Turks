@@ -9,6 +9,7 @@
 	<?php if($message_queue_count != 0) { ?>
 		<br><br>
 		<a href="add_record.php?sms=1"><div class="button">Add SMS Record</div></a>
+		<!--<div class="button" style="color:#AEAEAE">Add SMS Record</div>-->
 	<?php }else{ ?>
 		<br><br>
 		<div class="button" style="color:#AEAEAE">Add SMS Record</div>

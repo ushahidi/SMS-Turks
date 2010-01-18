@@ -1,11 +1,17 @@
 <?php
 session_start();
 
+if(isset($_POST['letmein'])) $_GET['letmein'] = $_POST['letmein'];
 if(isset($_GET['letmein'])) $_SESSION['authenticated'] = $_GET['letmein'];
 if(!isset($_SESSION['authenticated'])) $_SESSION['authenticated'] = 'wrongpw';
 
 if($_SESSION['authenticated'] != 'PCY492My6U8arf') {
-	echo 'Sorry, you need proper credentials to get in here.';
+	echo 'Sorry, you need proper credentials to get in here.<br /><br />';
+	echo '
+	<form method="post" action="smsqueue.php?'.$_SERVER['QUERY_STRING'].'">
+	<label for="letmein">Code:</label> <input type="text" id="letmein" name="letmein" value="" />
+	<input type="submit" value="Submit" />
+	</form>';
 	die();
 }
 
