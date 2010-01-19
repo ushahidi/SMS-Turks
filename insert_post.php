@@ -1,6 +1,6 @@
 <?php
 
-require_once 'db.php';
+require_once('db.php');
 
 if(isset($_GET['junk'])){
 	set_sms_status($_GET['junk'],3);

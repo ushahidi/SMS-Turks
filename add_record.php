@@ -1,8 +1,10 @@
 <?php
 session_start();
-global $title;
 require_once('db.php');
-$title = msg('Add a Record');
+
+if(!isset($_GET['sms'])){
+	header('Location:/');
+}
 
 /*
 if(isset($_GET['sitepw'])) $_SESSION['sitepw'] = $_GET['sitepw'];
