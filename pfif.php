@@ -117,40 +117,34 @@ foreach ($rows as $item) {
 
 
   <pfif:person>
-    <pfif:person_record_id>salesforce.com/a0030000001TRYR</pfif:person_record_id>
-    <pfif:entry_date>2005-09-03T09:21:12Z</pfif:entry_date>
-    <pfif:author_name>Bill Mandil</pfif:author_name>
-    <pfif:author_email>bmd67893@example.com</pfif:author_email>
-    <pfif:author_phone>(555) 258-6902</pfif:author_phone>
+    <pfif:person_record_id>http://4636.ushahidi.com/person.php?id='.$item['id'].'</pfif:person_record_id>
+    <pfif:entry_date>'.str_replace(' ','T',$item['ts']).'Z</pfif:entry_date>
+    <pfif:author_name></pfif:author_name>
+    <pfif:author_email></pfif:author_email>
+    <pfif:author_phone>'.$item['phone'].'</pfif:author_phone>
 
-    <pfif:source_name>salesforce.com</pfif:source_name>
-    <pfif:source_date>2005-09-03T09:21:12Z</pfif:source_date>
-    <pfif:source_url>http://www.salesforce.com/person/a0030000001TRYR</pfif:source_url>
-    <pfif:first_name>KATHERINE</pfif:first_name>
-    <pfif:last_name>DOE</pfif:last_name>
-    <pfif:home_city>TUSCALOOSA</pfif:home_city>
+    <pfif:source_name>4636.ushahidi.com</pfif:source_name>
+    <pfif:source_date>'.str_replace(' ','T',$item['ts']).'Z</pfif:source_date>
+    <pfif:source_url>http://4636.ushahidi.com/person.php?id='.$item['id'].'</pfif:source_url>
+    <pfif:first_name>'.$firstname.'</pfif:first_name>
+    <pfif:last_name>'.$lastname.'</pfif:last_name>
+    <pfif:home_city></pfif:home_city>
 
-    <pfif:home_state>AL</pfif:home_state>
+    <pfif:home_state></pfif:home_state>
     <pfif:home_neighborhood/>
-    <pfif:home_street>COTTON LANE</pfif:home_street>
-    <pfif:home_zip>94305</pfif:home_zip>
-    <pfif:photo_url>http://flickr.com/photo/12345678.jpg</pfif:photo_url>
-    <pfif:other>
-description:
-    Dark hair, in her late thirties.
-    Also goes by the names "Kate" or "Katie".
-salesforce.com/gender: female
-salesforce.com/company: Generic Savings Bank
-    </pfif:other>
+    <pfif:home_street>'.$address.'</pfif:home_street>
+    <pfif:home_zip></pfif:home_zip>
+    <pfif:photo_url></pfif:photo_url>
+    <pfif:other>'.$notes.'</pfif:other>
 
     <pfif:note>
-      <pfif:note_record_id>salesforce.com/00N30000000tO5N</pfif:note_record_id>
-      <pfif:entry_date>2005-09-03T20:52:25Z</pfif:entry_date>
-      <pfif:author_name>Jane Peters</pfif:author_name>
-      <pfif:author_email>jp123@example.com</pfif:author_email>
-      <pfif:author_phone>(555) 493-2342</pfif:author_phone>
+      <pfif:note_record_id>http://4636.ushahidi.com/person.php?id='.$item['id'].'</pfif:note_record_id>
+      <pfif:entry_date>'.str_replace(' ','T',$item['ts']).'Z</pfif:entry_date>
+      <pfif:author_name></pfif:author_name>
+      <pfif:author_email></pfif:author_email>
+      <pfif:author_phone>'.$item['phone'].'</pfif:author_phone>
 
-      <pfif:source_date>2005-09-03T20:52:25Z</pfif:source_date>
+      <pfif:source_date>'.str_replace(' ','T',$item['ts']).'Z</pfif:source_date>
       <pfif:found>true</pfif:found>
       <pfif:email_of_found_person>katie_doe@randomsite.biz</pfif:email_of_found_person>
       <pfif:phone_of_found_person>(555) 904-9095</pfif:phone_of_found_person>

@@ -6,7 +6,7 @@
 <?php
 	require_once('db.php');
 	
-	function grab_reports($limit='0,50',$sincets='0',$uptots='1500000000',$only_phone=0,$category=array()) {
+	function grab_reports($limit='0,50',$sincets='0',$uptots='1500000000',$only_phone=0,$category=array(),$carrierid='0',$actionable=0) {
 		$extra_query = '';
 		if($only_phone == 1){
 			$extra_query .= 'AND sms.number IS NOT NULL ';
@@ -16,9 +16,15 @@
 			foreach($category as $catid){
 				$extra_query .= 'OR aid_type LIKE \'%'.$catid.'%\' ';
 			}
-			$extra_query .= ')';
+			$extra_query .= ') ';
 		}
-		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.created, person.updated, person.sms, person.ts, person.aid_type, person.notes, person.smsid, person.gender, person.numppl, person.actionable, sms.date_rec as date_rec, sms.number as phone, sms.message as message, senderid.senderid as phoneid FROM person LEFT JOIN sms ON sms.smsid = person.smsid LEFT JOIN senderid ON senderid.number = sms.number WHERE created >= ".mysql_escape_string($sincets)." AND created <= ".mysql_escape_string($uptots)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
+		if($carrierid != 0){
+			$extra_query .= 'AND sms.carrierid = '.mysql_escape_string($carrierid).' ';
+		}
+		if($actionable == 1){
+			$extra_query .= 'AND actionable = 1 ';
+		}
+		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.created, person.updated, person.sms, person.ts, person.aid_type, person.notes, person.smsid, person.gender, person.numppl, person.actionable, person.private_notes, sms.date_rec as date_rec, sms.number as phone, sms.message as message, sms.carrierid as carrierid, senderid.senderid as phoneid, carrier.name as carriername FROM person LEFT JOIN sms ON sms.smsid = person.smsid LEFT JOIN senderid ON senderid.number = sms.number LEFT JOIN carrier ON carrier.carrierid = sms.carrierid WHERE created >= ".mysql_escape_string($sincets)." AND created <= ".mysql_escape_string($uptots)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
 		$sth = mysql_query($query);
 		return $sth;
 	}
@@ -38,7 +44,13 @@
 	$only_phone = 0;
 	if(isset($_GET['only_phone'])) $only_phone = $_GET['only_phone'];
 	
-	$sth = grab_reports($limit,$sincets,$uptots,$only_phone,$category);
+	$carrierid = '0';
+	if(isset($_GET['carrierid'])) $carrierid = $_GET['carrierid'];
+	
+	$actionable = 0;
+	if(isset($_GET['actionable'])) $actionable = $_GET['actionable'];
+	
+	$sth = grab_reports($limit,$sincets,$uptots,$only_phone,$category,$carrierid,$actionable);
 	$rows = array();
 	
 	$highest_updated_date = 0;
@@ -68,6 +80,15 @@ foreach ($rows as $item) {
 	$lastname = preg_replace("/[\x80-\xff]/", '?', $item['lastname']);
 	$firstname = preg_replace("/[\x80-\xff]/", '?', $item['firstname']);
 	$numppl = preg_replace("/[\x80-\xff]/", '?', $item['numppl']);
+	$private_notes = preg_replace("/[\x80-\xff]/", '?', $item['private_notes']);
+	
+	$summary = 'Phone Number:'.$item['phone'].' --- Translator Notes:'.$message.' - '.$notes.'';
+	
+	$extra = '';
+	if($actionable == 1){
+		$extra = '<private_notes><![CDATA['.$private_notes.']]></private_notes>';
+		$summary .= ' --- Private Notes:'.$private_notes;
+	}
 
 	echo '
 	<entry>
@@ -79,6 +100,8 @@ foreach ($rows as $item) {
 		<sms><![CDATA['.$message.']]></sms>
 		<smsrec>'.$item['date_rec'].'</smsrec>
 		<phone>'.$item['phone'].'</phone>
+		<carrierid>'.$item['carrierid'].'</carrierid>
+		<carriername>'.$item['carriername'].'</carriername>
 		<phoneid>'.$item['phoneid'].'</phoneid>
 		<category term="'.str_replace('-','',$item['aid_type']).'"/>
 		<categorization>'.str_replace('-','',$item['aid_type']).'</categorization>
@@ -91,8 +114,9 @@ foreach ($rows as $item) {
 		<address>'.$address.'</address>
 		<city>'.$city.'</city>
 		<department>'.$department.'</department>
-		<summary><![CDATA['.$item['phone'].': '.$message.' - '.$notes.']]></summary>
+		<summary><![CDATA['.$summary.']]></summary>
 		<notes><![CDATA['.$notes.']]></notes>
+		'.$extra.'
 		<georss:point>'.$item['lat'].' '.$item['lon'].'</georss:point>
 	</entry>';
 }

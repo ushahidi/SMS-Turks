@@ -157,7 +157,9 @@ if(isset($_GET["data_entry"]) && $_GET["data_entry"] == 1)
 							<option>--6a. Deaths</option>
 							<option>--6b. Missing Persons</option>
 							<option></option>
-							<option>Asking to forward a message</option>
+							<option>7. Child Alone</option>
+							<option></option>
+							<option>8. Asking to forward a message</option>
 							<option></option>
 						</select>
 						<span style="color:#FF0000">&lt;--Very Important</span>
@@ -250,7 +252,10 @@ if(isset($_GET["data_entry"]) && $_GET["data_entry"] == 1)
 					</td>
 				</tr>
 				<tr style="background-color:#E2B1B1;">
-					<td colspan="2">Without location information, we cannot act on this SMS. Please do your best to estimate where this message is asking us to respond.</td>
+					<td colspan="2">
+						Without location information, we cannot act on this SMS. Please do your best to estimate where this message is asking us to respond.<br/>
+						<span style="color:#FF0000">The Lat/Lon coordinates should be in decimal notation (example: 19.028194, -73.531494)</span>
+					</td>
 				</tr>
 				<tr style="background-color:#E2B1B1;">
 					<td><label for="lat">Latitude</label></td>

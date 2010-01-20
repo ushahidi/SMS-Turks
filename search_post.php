@@ -19,11 +19,6 @@ else list($count, $results) = search_person($_REQUEST);
 	<div id="content">
 		<p>Texting emergency needs and location information to 4636 on Digicel allows anyone in Haiti to report issues, receive alerts and useful information and most importantly to get their emergency information to relief organizations on the ground in Haiti. These services are operated by a collaborating group of organizations including Ushahidi, InSTEDD, Thomson Reuters Foundation, Sahana and the US Dept of State and provide a channel for many response and information activities on the ground.</p>
 		<p>Some of these reports are being aggregated on the website <a href="http://haiti.ushahidi.com/reports/submit/">http://haiti.ushahidi.com/reports/submit/</a>.</p>
-		<p><strong>Organizations Responding to Messages</strong></p>
-		<ul>
-			<li>Red Cross</li>
-		</ul>
-		<br/>
 		<iframe src="http://haiticrisis.appspot.com/?small=yes" width=350 height=300 frameborder=0 style="border: dashed 2px #77c"></iframe>
 
 		

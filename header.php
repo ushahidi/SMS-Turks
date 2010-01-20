@@ -12,11 +12,10 @@ if(isset($_GET('forcecron']))){
 }*/
 run_fake_cron();
 ?>
-
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <script type="text/javascript" src="util.js"></script>
 <title>4636.ushahidi.com - <?php pmsg('index_page_title'); if(isset($title)) print " | ".$title; ?></title>
 <link rel="stylesheet" href="/style.css" type="text/css" />
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 </head>
 <body>
 <div id="wrapper">
