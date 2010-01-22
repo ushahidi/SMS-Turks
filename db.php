@@ -31,6 +31,10 @@ add_sms($test_array[$rand_key]);
 */
 
 function collect_sms_data(){
+	
+	// New Feed
+	//feed://eis.trust.org/space/HaitiQuake/feed?format=rss2&ShowItemsInNoBasket=yes&ViewBaskets=None&SourceId=2368d87b-15a3-4c94-8f4e-ad2e23b53899
+
 	$html = curl_req('http://66.54.117.38/comments/text2screen/helphaiti.asp');
 	$chop1 = strrpos($html,'<td class="TableRow"></td>',26);
 	$chop2 = stripos($html,'<h1></h1>');
@@ -51,8 +55,10 @@ function collect_sms_data(){
 		$big_array[$id] = array(
 			'number'=>$holder[0],
 			'message'=>$message,
-			'time'=>$time
+			'time'=>$time,
+			'carrier_id'=>1
 		);
+		
 		$status=0;
 		
 		if(stripos($message,' ') === false ||
@@ -61,12 +67,48 @@ function collect_sms_data(){
 			stripos($message,'Registre Port_au_Prince') !== false ||
 			stripos($message,'Register Port_au_Prince') !== false){
 			$status = 3;
-		}else{
-			$status = 0;
 		}
+		
 		add_sms($big_array[$id],$status);
 	}
+	
 	return true;
+}
+
+function collect_comcel_sms_data(){
+	$rss = curl_req_comcel();
+	$domxml = DOMDocument::loadXML($rss);
+	$simplexml = simplexml_import_dom($domxml);
+	foreach($simplexml->channel->item as $sms){
+	
+		$sms_array = array();
+		
+		$phone = (string)$sms->author;
+		$phone = str_replace('smpp://','',$phone);
+		$phone = str_replace('sms://','',$phone);
+		$message = (string)$sms->title;
+		$time = strtotime((string)$sms->pubDate);
+		
+		$sms_array = array(
+			'number'=>$phone,
+			'message'=>$message,
+			'time'=>$time,
+			'carrier_id'=>2
+		);
+		
+		$status=0;
+		
+		if(stripos($message,' ') === false ||
+			stripos($message,'Registre Port-au-Prince') !== false ||
+			stripos($message,'Register Port-au-Prince') !== false ||
+			stripos($message,'Registre Port_au_Prince') !== false ||
+			stripos($message,'Register Port_au_Prince') !== false){
+			$status = 3;
+		}
+		
+		add_sms($sms_array,$status);
+	}
+	
 }
 
 function add_sms($data,$status=0){
@@ -78,7 +120,7 @@ function add_sms($data,$status=0){
 	if(mysql_result($result,0,'count') == 0) {
 		
 		//Insert the message into the SMS database
-		$query = sprintf("INSERT INTO sms (number, message, date_rec, status) VALUES ('%s', '%s', '%s', %d)",mysql_escape_string($data['number']), mysql_escape_string($data['message']), mysql_escape_string($data['time']), $status);
+		$query = sprintf("INSERT INTO sms (number, message, date_rec, status, carrierid) VALUES ('%s', '%s', '%s', %d, %d)",mysql_escape_string($data['number']), mysql_escape_string($data['message']), mysql_escape_string($data['time']), $status, $data['carrier_id']);
 		mysql_query($query);
 		
 		// Create a unique id for the phone number in the senderid table
@@ -102,6 +144,9 @@ function run_fake_cron($force=false){
 		
 		//Grab more messages
 		collect_sms_data();
+	}
+	if($rand == 2){
+		collect_comcel_sms_data();
 	}
 	return true;
 }

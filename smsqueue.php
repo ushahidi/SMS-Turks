@@ -5,7 +5,7 @@ if(isset($_POST['letmein'])) $_GET['letmein'] = $_POST['letmein'];
 if(isset($_GET['letmein'])) $_SESSION['authenticated'] = $_GET['letmein'];
 if(!isset($_SESSION['authenticated'])) $_SESSION['authenticated'] = 'wrongpw';
 
-if($_SESSION['authenticated'] != 'PCY492My6U8arf') {
+if($_SESSION['authenticated'] != 'q2L9N7FoXd8m') {
 	echo 'Sorry, you need proper credentials to get in here.<br /><br />';
 	echo '
 	<form method="post" action="smsqueue.php?'.$_SERVER['QUERY_STRING'].'">
@@ -24,7 +24,7 @@ if(isset($_GET['reintroduce'])){
 if(isset($_GET['editpost']) && isset($_POST['lat']) && isset($_POST['lon']) && isset($_POST['aid_type']) && isset($_POST['private_notes']) && isset($_POST['id'])){
 	$data = _prepare_data($_POST);
 	mysql_query(sprintf(
-	  "UPDATE person SET lat = %d, lon = %d, updated = %d, aid_type = '%s', private_notes = '%s', actionable = %d WHERE id = %d",
+	  "UPDATE person SET lat = %s, lon = %s, updated = %d, aid_type = '%s', private_notes = '%s', actionable = %d WHERE id = %d",
 		$data['lat'], $data['lon'], time(), $data['aid_type'], $data['private_notes'], $data['actionable'], $data['id']
 	));
 }
@@ -33,7 +33,7 @@ if(isset($_GET['editpost']) && isset($_POST['lat']) && isset($_POST['lon']) && i
 
 
 
-if(!isset($_GET['edit'])){
+if(!isset($_GET['edit']) && !isset($_GET['stats'])){
 	$title = 'SMS QUEUE';
 	$status = '0';
 	$link = 'http://4636.ushahidi.com/add_record.php?sms=1&sneaksms=';
@@ -130,7 +130,9 @@ if(isset($_GET['edit'])){
 							<option <?php echo ($aid_type == '--6a. Deaths') ? 'selected="selected"' : ''; ?>>--6a. Deaths</option>
 							<option <?php echo ($aid_type == '--6b. Missing Persons') ? 'selected="selected"' : ''; ?>>--6b. Missing Persons</option>
 							<option></option>
-							<option <?php echo ($aid_type == 'Asking to forward a message') ? 'selected="selected"' : ''; ?>>Asking to forward a message</option>
+							<option <?php echo ($aid_type == '7. Child Alone') ? 'selected="selected"' : ''; ?>>7. Child Alone</option>
+							<option></option>
+							<option <?php echo ($aid_type == '8. Asking to forward a message') ? 'selected="selected"' : ''; ?>>8. Asking to forward a message</option>
 							<option></option>
 						</select>
 					</td>
@@ -187,6 +189,42 @@ if(isset($_GET['edit'])){
 		';
 	}
 	echo '<table>';
+}
+
+
+
+if(isset($_GET['stats'])){
+	$result = mysql_query('SELECT COUNT(*) as count FROM person;');
+	$num_reports = mysql_result($result,0,'count');
+	
+	$result = mysql_query('SELECT COUNT(*) as count FROM sms;');
+	$num_sms = mysql_result($result,0,'count');
+	
+	echo '<h3>Number of Text Messages:</h3>
+		<table>
+		<tr><td>Overall</td><td>'.$num_sms.'</td></tr>
+		<tr><td>Deemed Useful</td><td>'.$num_reports.'</td></tr>
+		</table>';
+		
+	$result = mysql_query('SELECT COUNT(*) as count FROM person WHERE aid_type != \'\' AND aid_type != \'5. Other\';');
+	$num_categorized_reports = mysql_result($result,0,'count');
+	
+	$query = 'SELECT aid_type, ROUND(((count( aid_type ) / '.$num_categorized_reports.') * 100),2) AS percent, COUNT(aid_type) as num_aid_type FROM person WHERE aid_type != \'\' AND aid_type != \'5. Other\' GROUP BY aid_type ORDER BY percent DESC;';
+	$result = mysql_query($query);
+	echo '<h3>Category Breakdown - Overall:</h3>
+		<table><tr><th>Aid Type</th><th>#</th><th>%</th></tr>';
+	while($row = mysql_fetch_array( $result )) {
+		$aid_type = str_replace('-','',$row['aid_type']);
+		//if($row['num_aid_type'] != 1) {
+			echo '<tr><td>'.$aid_type.'</td><td>'.$row['num_aid_type'].'</td><td>'.$row['percent'].'%</td></tr>';
+		//}else{
+			if(!isset($other_percent)) $other_percent = 0;
+			$other_percent += $row['percent'];
+		//}
+	}
+	//$other = '<tr><td>Other</td><td>'.$other_percent.'%</td></tr>';
+	//echo $other;
+	echo '</table>';
 }
 
 
