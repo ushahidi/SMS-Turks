@@ -1,6 +1,14 @@
 <?php
+	$query_string = '';
+	if(isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] != '') $query_string = '?'.$_SERVER['QUERY_STRING'];
+	header('Location:http://4636.crowdflower.com/feed'.$query_string);
+	die();
+	
+	
 	header('Content-Type: application/atom+xml; charset=UTF-8');
 	if($_GET['key'] != 'yqNm7FHSwfdRb8nC2653') die('Key required');
+	//die();
+	//http://4636.crowdflower.com/feed
 ?>
 <?php echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>"; ?>
 <?php
@@ -24,7 +32,11 @@
 		if($actionable == 1){
 			$extra_query .= 'AND actionable = 1 ';
 		}
-		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.created, person.updated, person.sms, person.ts, person.aid_type, person.notes, person.smsid, person.gender, person.numppl, person.actionable, person.private_notes, sms.date_rec as date_rec, sms.number as phone, sms.message as message, sms.carrierid as carrierid, senderid.senderid as phoneid, carrier.name as carriername FROM person LEFT JOIN sms ON sms.smsid = person.smsid LEFT JOIN senderid ON senderid.number = sms.number LEFT JOIN carrier ON carrier.carrierid = sms.carrierid WHERE created >= ".mysql_escape_string($sincets)." AND created <= ".mysql_escape_string($uptots)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
+		
+		//$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.created, person.updated, person.sms, person.ts, person.aid_type, person.notes, person.smsid, person.gender, person.numppl, person.actionable, person.private_notes, sms.date_rec as date_rec, sms.number as phone, sms.message as message, sms.carrierid as carrierid, senderid.senderid as phoneid, carrier.name as carriername FROM person LEFT JOIN sms ON sms.smsid = person.smsid LEFT JOIN senderid ON senderid.number = sms.number LEFT JOIN carrier ON carrier.carrierid = sms.carrierid WHERE created >= ".mysql_escape_string($sincets)." AND created <= ".mysql_escape_string($uptots)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
+		
+		$query = "SELECT person.id, person.firstname, person.lastname, person.fullname, person.city, person.department, person.status, person.address, person.lat, person.lon, person.created, person.updated, person.sms, person.ts, person.aid_type, person.notes, person.smsid, person.gender, person.numppl, person.actionable, person.private_notes, sms.date_rec as date_rec, sms.number as phone, sms.message as message, sms.carrierid as carrierid FROM person LEFT JOIN sms ON sms.smsid = person.smsid WHERE created >= ".mysql_escape_string($sincets)." AND created <= ".mysql_escape_string($uptots)." ".$extra_query." order by created desc limit ".mysql_escape_string($limit);
+		
 		$sth = mysql_query($query);
 		return $sth;
 	}
@@ -72,15 +84,15 @@
 <?php
 foreach ($rows as $item) {
 	
-	$message = preg_replace("/[\x80-\xff]/", '?', $item['message']);
-	$notes = preg_replace("/[\x80-\xff]/", '?', $item['notes']);
-	$city = preg_replace("/[\x80-\xff]/", '?', $item['city']);
-	$address = preg_replace("/[\x80-\xff]/", '?', $item['address']);
-	$department = preg_replace("/[\x80-\xff]/", '?', $item['department']);
-	$lastname = preg_replace("/[\x80-\xff]/", '?', $item['lastname']);
-	$firstname = preg_replace("/[\x80-\xff]/", '?', $item['firstname']);
-	$numppl = preg_replace("/[\x80-\xff]/", '?', $item['numppl']);
-	$private_notes = preg_replace("/[\x80-\xff]/", '?', $item['private_notes']);
+	$message = preg_replace("/[^A-Za-z0-9\s\s+\.\:\-\/%+\(\)\*\&\$\#\!\@\"\';\n\t\r]/", '?', $item['message']);
+	$notes = preg_replace("/[^A-Za-z0-9\s\s+\.\:\-\/%+\(\)\*\&\$\#\!\@\"\';\n\t\r]/", '?', $item['notes']);
+	$city = preg_replace("/[^A-Za-z0-9\s\s+\.\:\-\/%+\(\)\*\&\$\#\!\@\"\';\n\t\r]/", '?', $item['city']);
+	$address = preg_replace("/[^A-Za-z0-9\s\s+\.\:\-\/%+\(\)\*\&\$\#\!\@\"\';\n\t\r]/", '?', $item['address']);
+	$department = preg_replace("/[^A-Za-z0-9\s\s+\.\:\-\/%+\(\)\*\&\$\#\!\@\"\';\n\t\r]/", '?', $item['department']);
+	$lastname = preg_replace("/[^A-Za-z0-9\s\s+\.\:\-\/%+\(\)\*\&\$\#\!\@\"\';\n\t\r]/", '?', $item['lastname']);
+	$firstname = preg_replace("/[^A-Za-z0-9\s\s+\.\:\-\/%+\(\)\*\&\$\#\!\@\"\';\n\t\r]/", '?', $item['firstname']);
+	$numppl = preg_replace("/[^A-Za-z0-9\s\s+\.\:\-\/%+\(\)\*\&\$\#\!\@\"\';\n\t\r]/", '?', $item['numppl']);
+	$private_notes = preg_replace("/[^A-Za-z0-9\s\s+\.\:\-\/%+\(\)\*\&\$\#\!\@\"\';\n\t\r]/", '?', $item['private_notes']);
 	
 	$summary = 'Phone Number:'.$item['phone'].' --- Translator Notes:'.$message.' - '.$notes.'';
 	
@@ -89,6 +101,9 @@ foreach ($rows as $item) {
 		$extra = '<private_notes><![CDATA['.$private_notes.']]></private_notes>';
 		$summary .= ' --- Private Notes:'.$private_notes;
 	}
+	
+	//<carriername>'.$item['carriername'].'</carriername>
+	//<phoneid>'.$item['phoneid'].'</phoneid>
 
 	echo '
 	<entry>
@@ -101,8 +116,8 @@ foreach ($rows as $item) {
 		<smsrec>'.$item['date_rec'].'</smsrec>
 		<phone>'.$item['phone'].'</phone>
 		<carrierid>'.$item['carrierid'].'</carrierid>
-		<carriername>'.$item['carriername'].'</carriername>
-		<phoneid>'.$item['phoneid'].'</phoneid>
+		<carriername></carriername>
+		<phoneid></phoneid>
 		<category term="'.str_replace('-','',$item['aid_type']).'"/>
 		<categorization>'.str_replace('-','',$item['aid_type']).'</categorization>
 		<actionable>'.$item['actionable'].'</actionable>

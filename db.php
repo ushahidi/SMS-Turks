@@ -30,11 +30,10 @@ $rand_key = array_rand($test_array);
 add_sms($test_array[$rand_key]);
 */
 
-function collect_sms_data(){
-	
-	// New Feed
-	//feed://eis.trust.org/space/HaitiQuake/feed?format=rss2&ShowItemsInNoBasket=yes&ViewBaskets=None&SourceId=2368d87b-15a3-4c94-8f4e-ad2e23b53899
+if(isset($_GET['forcecomcel'])) collect_comcel_sms_data();
+if(isset($_GET['forcedigicel'])) collect_sms_data();
 
+function collect_sms_data(){
 	$html = curl_req('http://66.54.117.38/comments/text2screen/helphaiti.asp');
 	$chop1 = strrpos($html,'<td class="TableRow"></td>',26);
 	$chop2 = stripos($html,'<h1></h1>');
@@ -47,35 +46,47 @@ function collect_sms_data(){
 	$data_string = str_replace('<tr><td>','',$data_string);
 	$data_string = str_replace('</tr></td>','',$data_string);
 	$big_array = explode('*****',$data_string);
+	
+	$result = mysql_query('SELECT date_rec FROM sms WHERE carrierid = 1 ORDER BY date_rec DESC LIMIT 1;');
+	$time_test = mysql_result($result,0,'date_rec');
+	
 	foreach($big_array as $id => $string){
 		//$holder = array();
 		$holder = explode('|',$string);
 		$time = strtotime(''.$holder[2].' '.$holder[3].'');
-		$message = str_replace('\0','',$holder[1]);
-		$big_array[$id] = array(
-			'number'=>$holder[0],
-			'message'=>$message,
-			'time'=>$time,
-			'carrier_id'=>1
-		);
-		
-		$status=0;
-		
-		if(stripos($message,' ') === false ||
-			stripos($message,'Registre Port-au-Prince') !== false ||
-			stripos($message,'Register Port-au-Prince') !== false ||
-			stripos($message,'Registre Port_au_Prince') !== false ||
-			stripos($message,'Register Port_au_Prince') !== false){
-			$status = 3;
+		if($time > $time_test){
+			$message = str_replace('\0','',$holder[1]);
+			$big_array[$id] = array(
+				'number'=>$holder[0],
+				'message'=>$message,
+				'time'=>$time,
+				'carrier_id'=>1
+			);
+			$status=0;
+			
+			if(stripos($message,' ') === false ||
+				stripos($message,'Registre Port-au-Prince') !== false ||
+				stripos($message,'Register Port-au-Prince') !== false ||
+				stripos($message,'Registre Port_au_Prince') !== false ||
+				stripos($message,'Register Port_au_Prince') !== false ||
+				strlen($message) < 30){
+				$status = 3;
+			}else{
+				$status = 0;
+			}
+			
+			add_sms($big_array[$id],$status);
 		}
 		
-		add_sms($big_array[$id],$status);
 	}
-	
 	return true;
 }
 
 function collect_comcel_sms_data(){
+
+	$result = mysql_query('SELECT date_rec FROM sms WHERE carrierid = 2 ORDER BY date_rec DESC LIMIT 1;');
+	$time_test = mysql_result($result,0,'date_rec');
+	
 	$rss = curl_req_comcel();
 	$domxml = DOMDocument::loadXML($rss);
 	$simplexml = simplexml_import_dom($domxml);
@@ -88,25 +99,28 @@ function collect_comcel_sms_data(){
 		$phone = str_replace('sms://','',$phone);
 		$message = (string)$sms->title;
 		$time = strtotime((string)$sms->pubDate);
+		if($time > $time_test){
 		
-		$sms_array = array(
-			'number'=>$phone,
-			'message'=>$message,
-			'time'=>$time,
-			'carrier_id'=>2
-		);
-		
-		$status=0;
-		
-		if(stripos($message,' ') === false ||
-			stripos($message,'Registre Port-au-Prince') !== false ||
-			stripos($message,'Register Port-au-Prince') !== false ||
-			stripos($message,'Registre Port_au_Prince') !== false ||
-			stripos($message,'Register Port_au_Prince') !== false){
-			$status = 3;
+			$sms_array = array(
+				'number'=>$phone,
+				'message'=>$message,
+				'time'=>$time,
+				'carrier_id'=>2
+			);
+			
+			$status=0;
+			
+			if(stripos($message,' ') === false ||
+				stripos($message,'Registre Port-au-Prince') !== false ||
+				stripos($message,'Register Port-au-Prince') !== false ||
+				stripos($message,'Registre Port_au_Prince') !== false ||
+				stripos($message,'Register Port_au_Prince') !== false ||
+				strlen($message) < 30){
+				$status = 3;
+			}
+			//if((time() - $time) > 21600) add_sms($sms_array,$status);
+			add_sms($sms_array,$status);
 		}
-		
-		add_sms($sms_array,$status);
 	}
 	
 }
@@ -114,13 +128,13 @@ function collect_comcel_sms_data(){
 function add_sms($data,$status=0){
 	
 	// Check if the message has been added before
-	$query = sprintf("SELECT COUNT(*) as count FROM sms WHERE number = '%s' AND message = '%s' LIMIT 1",mysql_escape_string($data['number']), mysql_escape_string($data['message']));
+	$query = sprintf("SELECT COUNT(*) as count FROM sms WHERE number = '%s' AND date_rec = '%s' LIMIT 1",mysql_escape_string($data['number']), mysql_escape_string($data['time']));
 	$result = mysql_query($query);
 	
 	if(mysql_result($result,0,'count') == 0) {
 		
 		//Insert the message into the SMS database
-		$query = sprintf("INSERT INTO sms (number, message, date_rec, status, carrierid) VALUES ('%s', '%s', '%s', %d, %d)",mysql_escape_string($data['number']), mysql_escape_string($data['message']), mysql_escape_string($data['time']), $status, $data['carrier_id']);
+		$query = sprintf("INSERT INTO sms (`number`, `message`, `date_rec`, `status`, `carrierid`) VALUES ('%s', '%s', '%s', %d, %s)",mysql_escape_string($data['number']), mysql_escape_string($data['message']), mysql_escape_string($data['time']), $status, $data['carrier_id']);
 		mysql_query($query);
 		
 		// Create a unique id for the phone number in the senderid table
@@ -136,17 +150,17 @@ function add_sms($data,$status=0){
 }
 
 function run_fake_cron($force=false){
-	$rand = rand(1,5);
+	$rand = rand(1,50);
 	if($rand == 1 || $force == 1) {
 
 		//Clean editing queue
 		mysql_query("UPDATE sms SET status = 0, ts = NOW() WHERE status = 1 AND ts < (CURRENT_TIMESTAMP - INTERVAL 10 MINUTE)");
 		
 		//Grab more messages
-		collect_sms_data();
+		//collect_sms_data();
 	}
 	if($rand == 2){
-		collect_comcel_sms_data();
+		//collect_comcel_sms_data();
 	}
 	return true;
 }
@@ -208,13 +222,17 @@ function create_record($data) {
 	if(!isset($data['source'])) $data['source'] = '';
 	if(!isset($data['fromsms'])) $data['fromsms'] = '';
 	if(!isset($data['notes'])) $data['notes'] = '';
+	if(!isset($data['addtonotes'])) $data['addtonotes'] = '';
 	if(!isset($data['sms'])) $data['sms'] = '';
 	if(!isset($data['actionable'])) $data['actionable'] = '';
+	
 	
 	if($data['notes'] == "" && $data['aid_type'] == "" && $data['lon'] == "" && $data['lat'] == "" && $data['address'] == ""
 		&& $data['department'] == "" && $data['city'] == "" && $data['fullname'] == " " && $data['sms'] == "" && $data['actionable'] == "") {
 		return 0;
 	}
+	
+	if($data['addtonotes'] != '') $data['notes'] .= ' --- Additional Notes: '.$data['addtonotes'];
 	
 	
 	$query = sprintf(

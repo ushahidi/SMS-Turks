@@ -36,30 +36,9 @@ if(isset($_GET["data_entry"]) && $_GET["data_entry"] == 1)
 <?php include('header.php') ?>
     <?php include_once("sidebar.php"); ?>
     <div id="content">
-
-<p>
-Great news, everyone!
-<p>
-   The amazing minds at Crowdflower and Samasource have offered to host & assist Mission 4636 (that's you) as we continue to grow in size and impact. While we've loved having our home at 4636.Ushahidi.com, they simply are not able provide the long term resources we need to continue providing aid to Haiti in the coming months.
-<p>
-   Luckily, these two amazing organizations (both of whom have a history of work in Haiti, and philosophy of providing jobs to workers in developing countries) have stepped in to help!
-<p>
-   Of course, as with all happy changes, you will notice a few differences.
-<p>1. We need you to begin by visiting 
-   <A href="http://www.samasource.org/contribute/volunteer">http://www.samasource.org/contribute/volunteer</a>, filling out some basic information, and receiving a unique Unique User Email.
-<br>2. You will then be directed to 
-<a href="http://4636.crowdflower.com/label">http://4636.crowdflower.com/label</a> where you will find our BEAUTIFUL new SMS Form. Don't worry, most of the fields will look familiar to our return users, and instructions will be available just in case you get confused.
- <br>3. You'll need to update your bookmarks with the second link because we can't wait to have you back again!
-<p>
-Ps: Don't worry - we get to keep the chat room!
-    <p>
-    </body>
-    </html>
-
-
     <?php
         //echo 'This form will be right back.';
-        die();
+        //die();
     ?>
             <?php
                 if(isset($_GET['success'])){
@@ -98,7 +77,7 @@ Ps: Don't worry - we get to keep the chat room!
                         </td>  
                     </tr>
                     <tr>
-                        <td colspan="2"><input type="submit" value="Submit" /> - if the messages is not an emergency, request for aid, reporting services etc, please submit without translating. If in doubt, please do translate.</td>
+                        <td colspan="2"><input type="submit" value="Submit" name="Not Relevant" /> - if the messages is not an emergency, request for aid, reporting services etc. If in doubt, please do translate.</td>
                     </tr>                    
                     
                 <?php
@@ -284,22 +263,17 @@ Ps: Don't worry - we get to keep the chat room!
                 </tr>
                 <tr style="background-color:#E2B1B1;">
                     <td colspan="2">
-                        Without location information, it is difficult to act on information. Please do your best to estimate where this message is asking us to respond.<br/>
+                        Without location information, we cannot act on this SMS. Please do your best to estimate where this message is asking us to respond.<br/>
                         <span style="color:#FF0000">The Lat/Lon coordinates should be in decimal notation (example: 19.028194, -73.531494)</span>
                     <br>
 
                     <br>
                     If you are having trouble finding a location on a map, you can also try:<br>
                     <A href="http://www.openstreetmap.org/?lat=18.96&lon=-72.81&zoom=8&layers=B000FTF" target="_blank">Open Street Map</A>
-
-                    <br><A href="http://www.maplandia.com/haiti/" target="_blank">Maplandia</A>                    
-                    <br><A href="https://spreadsheets.google.com/ccc?key=0AvF_12pc7fQCdHhnVkZPWEpjUlhYNTZsYkFIbzM1eUE&hl=en" target="_blank">Specific Site Locations and Lat / Long (Church, Buildings, etc)</A>                    
-                    <br><A href="http://spreadsheets.google.com/ccc?key=0AgxYBmJLr519dFFaTWxmTzhmWjR3QkNNMjkyX1c2T3c&hl=en" target="_blank">District Names and Nicknames, Abbrevs Etc</A>                    
-                    <br>Many of the locations are in more detail in these places.
-
-
-
-
+                    <br>and
+                    <br>
+                    <A href="http://www.maplandia.com/haiti/" target="_blank">Maplandia</A>                    
+                    <br>Many of the locations are in more detail in both these places.
 
 
 

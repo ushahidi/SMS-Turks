@@ -6,9 +6,9 @@ $count = number_format($count);
 $message_queue_count = get_sms_queue_count();
 /*
 if(isset($_GET('forcecron']))){
-	run_fake_cron(1);
+    run_fake_cron(1);
 }else{
-	run_fake_cron();
+    run_fake_cron();
 }*/
 run_fake_cron();
 ?>
@@ -20,14 +20,18 @@ run_fake_cron();
 <body>
 <div id="wrapper">
     <div id="header">
-		<div style="float: right;">
-			<form method="get" action="search_post.php">
-				<table><tr><td><img src="search.jpg" alt="" /></td><td><input type="text" id="search" name="name" onblur="replaceInput(this);" onfocus="clearInput(this);" value="Search" /></td><td colspan="2"><input type="submit" id="search-button" value="Search" /></td></tr></table>
-			</form>
-		</div>
-		<h2><a href="/">4636.USHAHIDI.COM</a></h2>
-		<div style="float: left;">
-			Records: <a href="search_post.php"><?php print $count; ?></a> | Messages in queue: <a href="add_record.php?sms=1"><?php echo $message_queue_count; ?></a>
-		</div>
-	</div>
-	<div style="clear:both"></div>
+        <div style="float: right;">
+            <form method="get" action="search_post.php">
+                <table><tr><td><img src="search.jpg" alt="" /></td><td><input type="text" id="search" name="name" onblur="replaceInput(this);" onfocus="clearInput(this);" value="Search" /></td><td colspan="2"><input type="submit" id="search-button" value="Search" /></td></tr></table>
+            </form>
+        </div>
+        <h2><a href="/">4636.USHAHIDI.COM</a></h2>
+        <div style="float: left;">Records and Queue at new site!
+        <!--
+            Records: 
+            <a href="search_post.php"><?php print ""; /* $count; */ ?></a> 
+            | Messages in queue: <a href="add_record.php?sms=1"><?php echo ""; /* $message_queue_count; */ ?></a>
+            -->
+        </div>
+    </div>
+    <div style="clear:both"></div>

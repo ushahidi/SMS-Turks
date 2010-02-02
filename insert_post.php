@@ -4,7 +4,8 @@ require_once('db.php');
 
 if(isset($_GET['junk'])){
 	set_sms_status($_GET['junk'],3);
-	header('Location: add_record.php?sms=1&junksuccess=1');
+	//echo 'Marked as insufficient. <a href="http://4636.ushahidi.com/add_record.php?sms=1">Continue</a>';
+	header('Location: http://4636.ushahidi.com/add_record.php?sms=1&junksuccess=1');
 }
 
 $person_id = create_record($_POST);

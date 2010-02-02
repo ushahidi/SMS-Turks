@@ -6,14 +6,14 @@
 	<a href="add_record.php"><div class="button"><?php pmsg('Add Record'); ?></div></a>
 	-->
 	
-	<?php if($message_queue_count != 0) { ?>
+	<?php/* if($message_queue_count != 0) { ?>
 		<br><br>
 		<a href="add_record.php?sms=1"><div class="button">Add SMS Record</div></a>
 		<!--<div class="button" style="color:#AEAEAE">Add SMS Record</div>-->
 	<?php }else{ ?>
 		<br><br>
 		<div class="button" style="color:#AEAEAE">Add SMS Record</div>
-	<?php } ?>
+	<?php } */?>
 	
 	<br><br>
 	<a href="http://wiki.ushahidi.com/doku.php?id=4636instructions"><div class="button">Instructions</div></a>
