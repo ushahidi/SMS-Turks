@@ -25,6 +25,7 @@
 <body>
 	
 	<h1>SMS Turks</h1>
+	<div><?php echo $queue_box; ?></div>
 	<ul>
 		<li><?php echo html::anchor('/', 'Home') ?></li>
 		<li><?php echo html::anchor('task', 'Queue') ?></li>
@@ -34,8 +35,10 @@
 
 	<p class="copyright">
 		Rendered in {execution_time} seconds, using {memory_usage} of memory<br />
-		Copyright ©2007–2008 Kohana Team
+		Copyright?
 	</p>
+
+<?php Debug_Toolbar::render(TRUE); ?>
 
 </body>
 </html>

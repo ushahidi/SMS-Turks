@@ -21,24 +21,72 @@ class Message_Model extends ORM
 	// Database table name
 	protected $table_name = 'messages';
 	
-	
-
-	static function get_available_messages($limit='1')
+	public function get_oldest_available_message($lock=1)
 	{
 		// Get all active categories
 		$messages = array();
 		foreach (ORM::factory('message')
 			->where('status', '0')
 			->orderby('received','ASC')
-			->limit($limit)
+			->limit(1)
 			->find_all() as $msg)
 		{
 			// Create a list of all categories
 			$messages[$msg->id] = array('number'=>$msg->number, 
-										'sms'=>$msg->sms, 
-										'received'=>$msg->received);
+										'sms'=>$msg->sms,
+										'translation'=>$msg->translation,
+										'notes'=>$msg->notes,
+										'received'=>$msg->received,
+										'updated'=>$msg->updated);
+										
+			if($lock == 1) Message_Model::lock_message($msg->id);
 		}
 		return $messages;
+	}
+	
+	static function update_translation($id,$translation)
+	{
+		$time = time::db_timestamp();
+		$message = ORM::factory('message',$id);
+		$message->translation = $translation;
+		$message->updated = $time;
+		$message->status = 2;
+		return $message->save();
+	}
+	
+	private function lock_message($id)
+	{
+		$time = time::db_timestamp();
+		$message = ORM::factory('message',$id);
+		$message->status = 1;
+		$message->updated = $time;
+		return $message->save();
+	}
+	
+	static function unlock_message($id)
+	{
+		$time = time::db_timestamp();
+		$message = ORM::factory('message',$id);
+		$message->status = 0;
+		$message->updated = $time;
+		return $message->save();
+	}
+	
+	static function get_queue_count()
+	{
+		return ORM::factory('message')
+			->where('status', '0')
+			->count_all();
+	}
+	
+	static function add_message($number,$sms){
+		$time = time::db_timestamp();
+		$message = ORM::factory('message');
+		$message->number = $number;
+		$message->sms = $sms;
+		$message->received = $time;
+		$message->updated = $time;
+		return $message->save();
 	}
 
 }

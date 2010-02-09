@@ -1,48 +1,38 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * Default Kohana controller. This controller should NOT be used in production.
- * It is for demonstration purposes only!
+ * Welcome homepage
  *
  * @package    Core
  * @author     Kohana Team
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Welcome_Controller extends Template_Controller {
-
-	// Disable this controller when Kohana is set to production mode.
-	// See http://docs.kohanaphp.com/installation/deployment for more details.
-	const ALLOW_PRODUCTION = FALSE;
-
-	// Set the name of the template to use
-	public $template = 'kohana/template';
+class Welcome_Controller extends Main_Controller {
 
 	public function index()
 	{
-		Debug_Toolbar::render(TRUE);
-
-		// In Kohana, all views are loaded and treated as objects.
 		$this->template->content = new View('welcome');
 		
 		$this->user_id = $this->login();
+
+		$this->template->title = 'Welcome';
+	}
+	
+	public function test($do=NULL)
+	{
+		$this->template->content = new View('welcome');
 		
-		echo '<pre>';
-		var_dump($this->user_id);
-		echo '</pre>';
-
-		$this->template->title = 'SMS Turks';
-
-		// An array of links to display. Assiging variables to views is completely
-		// asyncronous. Variables can be set in any order, and can be any type
-		// of data, including objects.
-		$this->template->content->links = array
-		(
-			'Home Page'     => 'http://kohanaphp.com/',
-			'Documentation' => 'http://docs.kohanaphp.com/',
-			'Forum'         => 'http://forum.kohanaphp.com/',
-			'License'       => 'Kohana License.html',
-			'Donate'        => 'http://kohanaphp.com/donate',
-		);
+		$this->template->title = 'Welcome';
+		
+		switch($do){
+			case 'add_sms':
+				Message_Model::add_message('1112223333','This is a test message '.rand(1,1000));
+				break;
+			default:
+				die('Do Required');
+		}
+		
+		Debug_Toolbar::render(TRUE);
 	}
 	
 	public function login()
