@@ -1,0 +1,6 @@
+.*swp
+*~
+application/logs/*
+application/cache/*
+application/config/config.php
+application/config/database.php
