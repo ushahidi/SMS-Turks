@@ -27,7 +27,6 @@ class Main_Controller extends Template_Controller {
 	public function index()
 	{
 		// keep it here for good measure
-		echo 'main index';
 	}
 	
 	public function process_post($post)
@@ -47,4 +46,4 @@ class Main_Controller extends Template_Controller {
 		}
 	}
 
-} // End Task Controller
+}
