@@ -44,6 +44,35 @@ class Message_Model extends ORM
 		return $messages;
 	}
 	
+	static function get_translated_messages($limit='0,20')
+	{
+		// Set up limit
+		$start = 0;
+		if(strpos($limit,',')) {
+			$limit = explode(',',$limit);
+			$rows = $limit[0];
+			$start = $limit[1];
+		}
+
+		// Get all active categories
+		$messages = array();
+		foreach (ORM::factory('message')
+			->where('status', '2')
+			->orderby('received','DESC')
+			->limit($start,$rows)
+			->find_all() as $msg)
+		{
+			// Create a list of all categories
+			$messages[$msg->id] = array('number'=>$msg->number, 
+										'sms'=>$msg->sms,
+										'translation'=>$msg->translation,
+										'notes'=>$msg->notes,
+										'received'=>$msg->received,
+										'updated'=>$msg->updated);
+		}
+		return $messages;	
+	}
+	
 	static function update_translation($id,$translation)
 	{
 		$time = time::db_timestamp();
